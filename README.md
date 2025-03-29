@@ -1,6 +1,6 @@
 ### Benchmarking ctfr implementations
 
-This auxiliary repository contains the code to benchmark the CTFR implementations of the article:
+This supplementary repository contains the code to benchmark the CTFR implementations of the article:
 
 > Placeholder
 
@@ -37,4 +37,4 @@ To ensure reproducibility, all spectrogram plots in the article can be generated
 
 ## Implementations code
 
-The code for the implementations of the CTFR algorithms (both baseline and `ctfr`) is available in a [separate documentation](https://ctfr_benchmarks.readthedocs.io/en/latest/)
+The code for the implementations of the CTFR algorithms (both baseline and `ctfr`) is available in a [separate documentation](https://ctfr-benchmarks.readthedocs.io/en/latest/).

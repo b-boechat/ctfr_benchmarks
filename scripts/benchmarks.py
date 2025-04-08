@@ -35,11 +35,12 @@ def benchmark_method(specs, method, num_iter, **kwargs):
     total_time = 0.0
     for _ in range(num_iter):
         start_time = perf_counter()
-        swgm_spec = ctfr.ctfr_from_specs(specs, method=method, **kwargs)
+        cspec = ctfr.ctfr_from_specs(specs, method=method, **kwargs)
         elapsed_time = perf_counter() - start_time
+        print(f"Elapsed time for {method}, i = {_}: {elapsed_time:0.3f} s")
         total_time += elapsed_time
     average_time = total_time / num_iter
-    return swgm_spec, average_time
+    return cspec, average_time
 
 def compute_max_local_energy(specs, freq_width=11, time_width=11):
     """ Compute the maximum local energy among the spectrograms for each time-frequency bin. """
@@ -63,6 +64,10 @@ def criterium_share(max_local_energy, energy_criterium_db):
     energy_criterium = 10.0 ** (energy_criterium_db/10.0)
     return np.sum(max_local_energy >= energy_criterium)/max_local_energy.size
 
+def log_spectral_distortion(cspec, cspec_ref):
+    """ Compute the log spectral distortion between two spectrograms. """
+    return np.mean(np.abs(ctfr.power_to_db(cspec) - ctfr.power_to_db(cspec_ref)), axis=None)
+
 def non_interp_share(specs_shape, interp_steps):
     """ Compute the share of time-frequency bins in which the sparsity computation of SLS-I is not interpolated, for a given specification of the interpolation steps. """
 
@@ -73,7 +78,6 @@ def non_interp_share(specs_shape, interp_steps):
         m_len = len(list(chain(range(0, M, interp_steps[p, 1]), range( (M - 1) // interp_steps[p, 1] * interp_steps[p, 1] + 1, M))))
         total_non_interp += k_len * m_len
     return total_non_interp / (P * K * M)
-
 
 def time_all_pipeline(num_iter):
     """ Benchmark all methods and implementations. """
@@ -102,26 +106,32 @@ def time_all_pipeline(num_iter):
     print(f"ctfr: {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time")
     assert np.allclose(cspec_base, cspec_ctfr)
 
+    print("\n==== LT ====\n")
+    cspec_base, average_time_base = benchmark_method(specs, method='baseline_lt', num_iter=num_iter)
+    print(f"Baseline: {average_time_base:0.3f} s -- {100*average_time_base/duration:0.2f}% real-time")
+    cspec_ctfr, average_time_ctfr = benchmark_method(specs, method='lt', num_iter=num_iter)
+    print(f"ctfr: {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time")
+    assert np.allclose(cspec_base, cspec_ctfr)
+
     print("\n==== SLS ====\n")
     cspec_base, average_time_base = benchmark_method(specs, method='baseline_sls', num_iter=num_iter)
     print(f"Baseline: {average_time_base:0.3f} s -- {100*average_time_base/duration:0.2f}% real-time")
-    cspec_ctfr, average_time_ctfr = benchmark_method(specs, method='sls_h', num_iter=num_iter, energy_criterium_db=-200)
 
     max_local_energy = compute_max_local_energy(specs)
 
     cspec_ctfr, average_time_ctfr = benchmark_method(specs, method='sls_h', num_iter=num_iter, energy_criterium_db=-60)
-    print(f"SLS-H (-60): {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time -- {100*criterium_share(max_local_energy, -60):.2f}% SLS")
+    print(f"SLS-H (-60): {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time -- {100*criterium_share(max_local_energy, -60):.2f}% SLS -- {log_spectral_distortion(cspec_ctfr, cspec_base):.2f} LSD")
     cspec_ctfr, average_time_ctfr = benchmark_method(specs, method='sls_h', num_iter=num_iter, energy_criterium_db=-40)
-    print(f"SLS-H (-40): {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time -- {100*criterium_share(max_local_energy, -40):.2f}% SLS")
+    print(f"SLS-H (-40): {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time -- {100*criterium_share(max_local_energy, -40):.2f}% SLS -- {log_spectral_distortion(cspec_ctfr, cspec_base):.2f} LSD")
     cspec_ctfr, average_time_ctfr = benchmark_method(specs, method='sls_h', num_iter=num_iter, energy_criterium_db=-20)
-    print(f"SLS-H (-20): {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time -- {100*criterium_share(max_local_energy, -20):.2f}% SLS")
+    print(f"SLS-H (-20): {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time -- {100*criterium_share(max_local_energy, -20):.2f}% SLS -- {log_spectral_distortion(cspec_ctfr, cspec_base):.2f} LSD")
 
     interp_steps_default = np.array([[4, 1], [2, 2], [1, 4]])
     interp_steps_double = np.array([[8, 2], [4, 4], [2, 8]])
     cspec_ctfr, average_time_ctfr = benchmark_method(specs, method='sls_i', num_iter=num_iter, interp_steps=interp_steps_default)
-    print(f"SLS-I (default): {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time -- {100*non_interp_share(specs.shape, interp_steps_default):.2f}% SLS")
+    print(f"SLS-I (default): {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time -- {100*non_interp_share(specs.shape, interp_steps_default):.2f}% SLS -- {log_spectral_distortion(cspec_ctfr, cspec_base):.2f} LSD")
     cspec_ctfr, average_time_ctfr = benchmark_method(specs, method='sls_i', num_iter=num_iter, interp_steps=interp_steps_double)
-    print(f"SLS-I (doubled): {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time -- {100*non_interp_share(specs.shape, interp_steps_double):.2f}% SLS")
+    print(f"SLS-I (doubled): {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time -- {100*non_interp_share(specs.shape, interp_steps_double):.2f}% SLS -- {log_spectral_distortion(cspec_ctfr, cspec_base):.2f} LSD")
 
 
 if __name__ == "__main__":

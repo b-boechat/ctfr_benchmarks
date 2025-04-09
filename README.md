@@ -19,8 +19,6 @@ pip install -e .
 
 ```
 
-This is gonna install a clone of the `ctfr` package (version 0.1.0) with the baseline implementations added.
-
 Then, you can run the benchmarks on your local machine running
 
 ```shell

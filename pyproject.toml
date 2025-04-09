@@ -4,14 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ctfr"
-dynamic = ["version", "authors", "dependencies"]
+dynamic = ["version", "authors", "optional-dependencies"]
 description = "Efficient toolbox for computing combined time-frequency representations of audio signals."
 readme = "README.md"
 requires-python = ">=3.11"
+dependencies = ["numpy", "librosa", "scipy", "pooch", "matplotlib"]
 
 [tool.setuptools.dynamic]
 version = {attr = "ctfr.__version__"}
-dependencies = {file = "requirements.txt"}
+optional-dependencies.exact = {file = "requirements.txt"}
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -7,7 +7,7 @@ name = "ctfr"
 dynamic = ["version", "authors", "optional-dependencies"]
 description = "Efficient toolbox for computing combined time-frequency representations of audio signals."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.9"
 dependencies = ["numpy", "librosa", "scipy", "pooch", "matplotlib"]
 
 [tool.setuptools.dynamic]

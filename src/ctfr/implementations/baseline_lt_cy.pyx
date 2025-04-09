@@ -85,8 +85,8 @@ cdef _baseline_lt_cy(double[:,:,::1] X_orig, Py_ssize_t lk, Py_ssize_t lm, doubl
                 smearing_denominator = 0.0
                 smearing_numerator = 0.0
                 for i in range(combined_size):
-                    smearing_denominator = smearing_denominator + calc_vector[o]
-                    smearing_numerator = smearing_numerator + (combined_size-o)*calc_vector[o]
+                    smearing_denominator = smearing_denominator + calc_vector[i]
+                    smearing_numerator = smearing_numerator + (combined_size-i)*calc_vector[i]
                 smearing[p, k - lk_lobe, m - lm_lobe] = smearing_numerator/(sqrt(smearing_denominator) + epsilon)
                 
     ############ }}}

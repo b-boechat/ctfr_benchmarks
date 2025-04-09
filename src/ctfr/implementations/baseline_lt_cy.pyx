@@ -46,41 +46,52 @@ cdef _baseline_lt_cy(double[:,:,::1] X_orig, Py_ssize_t lk, Py_ssize_t lm, doubl
         double epsilon = 1e-15
         Py_ssize_t combined_size = lm * lk
 
+    # Zero-pad spectrograms for windowing
     X_ndarray = np.pad(X_orig, ((0, 0), (lk_lobe, lk_lobe), (lm_lobe, lm_lobe)))
     cdef double[:, :, :] X = X_ndarray
 
-
+    # Container that stores an horizontal segment of a spectrogram, with all frequency bins. Used to calculate smearing.
     calc_vector_ndarray = np.zeros(combined_size, dtype = np.double)
     cdef double[:] calc_vector = calc_vector_ndarray 
  
+    # Container that stores the result.
     result_ndarray = np.zeros((K, M), dtype=np.double)
     cdef double[:, :] result = result_ndarray
 
+    # Container that stores the local smearing.
     smearing_ndarray = np.zeros((P, K, M), dtype=np.double)
     cdef double[:,:,:] smearing = smearing_ndarray
-    cdef double smearing_numerator, smearing_denominator
-    cdef Py_ssize_t o
 
+    # Variables related to smearing calculation.
+    cdef double smearing_numerator, smearing_denominator
+
+    # Variables related to spectrogram combination.
     cdef double weight, weights_sum, result_acc
 
+    ############ Local smearing calculation {{{
 
     for p in range(P):
+        # Iterates through neighborhoods.
         for k in range(lk_lobe, K + lk_lobe):
             for m in range(lm_lobe, M + lm_lobe):
 
+                # Obtain the neighborhood sorted vector.
                 for i in range(lk):
                     for j in range(lm):
-                        calc_vector[i*lm + j] = X[p, k - lk_lobe + i, m - lm_lobe + j]                
-                
+                        calc_vector[i*lm + j] = X[p, k - lk_lobe + i, m - lm_lobe + j]                                
                 calc_vector_ndarray.sort()
 
+                # Compute the smearing function.
                 smearing_denominator = 0.0
                 smearing_numerator = 0.0
-                for o in range(combined_size):
+                for i in range(combined_size):
                     smearing_denominator = smearing_denominator + calc_vector[o]
                     smearing_numerator = smearing_numerator + (combined_size-o)*calc_vector[o]
                 smearing[p, k - lk_lobe, m - lm_lobe] = smearing_numerator/(sqrt(smearing_denominator) + epsilon)
                 
+    ############ }}}
+
+    ############ Spectrograms weighted combination {{{
 
     for k in range(K):
         for m in range(M):
@@ -91,5 +102,7 @@ cdef _baseline_lt_cy(double[:,:,::1] X_orig, Py_ssize_t lk, Py_ssize_t lm, doubl
                 result_acc = result_acc + weight * X_orig[p, k, m]
                 weights_sum = weights_sum + weight
             result[k, m] = result_acc / weights_sum
+
+    ############ }}}
 
     return result_ndarray

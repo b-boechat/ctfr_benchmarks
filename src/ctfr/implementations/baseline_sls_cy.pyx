@@ -123,6 +123,6 @@ cdef _baseline_sls_cy(double[:,:,::1] X_orig, Py_ssize_t lek, Py_ssize_t lsk, Py
 
     result_ndarray = np.average(X_orig_ndarray * np.min(energy_ndarray, axis=0)/energy_ndarray, axis=0, weights=combination_weight_ndarray)
 
-    ############ }} Combinação por Esparsidade Local e compensação por Energia Local
+    ############ }} Smoothed local sparsity combination
 
     return result_ndarray

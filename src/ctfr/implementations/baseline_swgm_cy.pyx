@@ -34,6 +34,7 @@ cdef _baseline_swgm_cy(double[:,:,::1] X, double beta, double max_gamma):
     result_ndarray = np.ones((K, M), dtype=np.double)
     cdef double[:, :] result = result_ndarray
 
+    # Compute combination weights.
     for k in range(K):
         for m in range(M):
             for p in range(P):

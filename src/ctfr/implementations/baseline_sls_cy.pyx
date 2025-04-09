@@ -59,8 +59,7 @@ cdef _baseline_sls_cy(double[:,:,::1] X_orig, Py_ssize_t lek, Py_ssize_t lsk, Py
     result_ndarray = np.zeros((K, M), dtype=np.double)
 
     # Containers and variables related to local sparsity calculation.
-    sparsity_ndarray = np.zeros((P, K, M), dtype=np.double) # TODO change to empty.
-    cdef double[:,:,:] sparsity = sparsity_ndarray
+    sparsity_ndarray = np.zeros((P, K, M), dtype=np.double)
     cdef double arr_norm, gini
 
     # Container for the local energy.

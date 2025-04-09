@@ -37,7 +37,6 @@ def benchmark_method(specs, method, num_iter, **kwargs):
         start_time = perf_counter()
         cspec = ctfr.ctfr_from_specs(specs, method=method, **kwargs)
         elapsed_time = perf_counter() - start_time
-        print(f"Elapsed time for {method}, i = {_}: {elapsed_time:0.3f} s")
         total_time += elapsed_time
     average_time = total_time / num_iter
     return cspec, average_time
@@ -119,8 +118,8 @@ def time_all_pipeline(num_iter):
 
     max_local_energy = compute_max_local_energy(specs)
 
-    cspec_ctfr, average_time_ctfr = benchmark_method(specs, method='sls_h', num_iter=num_iter, energy_criterium_db=-60)
-    print(f"SLS-H (-60): {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time -- {100*criterium_share(max_local_energy, -60):.2f}% SLS -- {log_spectral_distortion(cspec_ctfr, cspec_base):.2f} LSD")
+    cspec_ctfr, average_time_ctfr = benchmark_method(specs, method='sls_h', num_iter=num_iter, energy_criterium_db=-50)
+    print(f"SLS-H (-50): {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time -- {100*criterium_share(max_local_energy, -50):.2f}% SLS -- {log_spectral_distortion(cspec_ctfr, cspec_base):.2f} LSD")
     cspec_ctfr, average_time_ctfr = benchmark_method(specs, method='sls_h', num_iter=num_iter, energy_criterium_db=-40)
     print(f"SLS-H (-40): {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time -- {100*criterium_share(max_local_energy, -40):.2f}% SLS -- {log_spectral_distortion(cspec_ctfr, cspec_base):.2f} LSD")
     cspec_ctfr, average_time_ctfr = benchmark_method(specs, method='sls_h', num_iter=num_iter, energy_criterium_db=-20)

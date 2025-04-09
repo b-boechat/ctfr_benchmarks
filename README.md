@@ -19,6 +19,8 @@ pip install -e .
 
 ```
 
+This is gonna install a clone of the `ctfr` package (version 0.1.0) with the baseline implementations added.
+
 Then, you can run the benchmarks on your local machine running
 
 ```shell
@@ -29,6 +31,14 @@ You can specify the number of repetitions for each benchmark with a command line
 
 ```shell
 python scripts/benchmarks.py 10
+```
+
+## Exact dependencies
+
+The exact dependencies' versions used to run the benchmarks are listed in the `requirements.txt` file. You can install the package with them by running:
+
+```shell
+pip install -e .[exact]
 ```
 
 ## Plots

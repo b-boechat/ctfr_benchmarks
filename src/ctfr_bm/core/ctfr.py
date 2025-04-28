@@ -1,12 +1,12 @@
 import numpy as np
-from ctfr.exception import InvalidRepresentationTypeError
-from ctfr.utils.audio import stft_spec, cqt_spec
+from ctfr_bm.exception import InvalidRepresentationTypeError
+from ctfr_bm.utils.audio import stft_spec, cqt_spec
 from .core_utils import (
     _normalize_specs_tensor,
     _get_specs_tensor_energy_array,
     _normalize_spec,
 )
-from ctfr.utils.private import (
+from ctfr_bm.utils.private import (
     _round_to_power_of_two, 
     _get_method_function,
     _request_tfrs_info

@@ -15,17 +15,19 @@ git clone git@github.com:b-boechat/ctfr_benchmarks.git
 cd ctfr_benchmarks
 python -m venv venv
 source venv/bin/activate
-pip install -e .
+pip install .
 
 ```
 
-Then, you can run the benchmarks on your local machine running
+This will install `ctfr_bm`, which is a clone of the `ctfr` package with the baseline implementations added.
+
+Then, you can run the benchmarks on your local machine with:
 
 ```shell
 python scripts/benchmarks.py
 ```
 
-You can specify the number of repetitions for each benchmark with a command line argument. For example, for 10 repetitions, you can use:
+You can specify the number of repetitions for each benchmark (default is 5) with a command line argument. For example, for 10 repetitions, you can use:
 
 ```shell
 python scripts/benchmarks.py 10
@@ -36,7 +38,7 @@ python scripts/benchmarks.py 10
 The exact dependencies' versions used to run the benchmarks are listed in the `requirements.txt` file. You can install the package with them by running:
 
 ```shell
-pip install -e .[exact]
+pip install .[exact]
 ```
 
 ## Plots

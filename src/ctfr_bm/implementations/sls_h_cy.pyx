@@ -2,7 +2,7 @@ import numpy as np
 from scipy.signal import correlate
 cimport cython
 from libc.math cimport INFINITY, exp
-from ctfr.utils.arguments_check import _enforce_nonnegative, _enforce_odd_positive_integer
+from ctfr_bm.utils.arguments_check import _enforce_nonnegative, _enforce_odd_positive_integer
 
 def _sls_h_wrapper(X, 
         lek = 11, 

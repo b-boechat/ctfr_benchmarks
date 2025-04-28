@@ -2,7 +2,7 @@ import numpy as np
 cimport cython
 from libc.math cimport sqrt, pow
 from warnings import warn
-from ctfr.warning import ArgumentChangeWarning
+from ctfr_bm.warning import ArgumentChangeWarning
 
 def _baseline_lt_wrapper(X, lk = 21, lm = 11, eta = 8.0):
     lk = int(lk)

@@ -3,8 +3,8 @@ from scipy.signal import correlate
 from itertools import chain
 cimport cython
 from libc.math cimport exp
-from ctfr.utils.arguments_check import _enforce_nonnegative, _enforce_odd_positive_integer
-from ctfr.exception import InvalidArgumentError, ArgumentRequiredError
+from ctfr_bm.utils.arguments_check import _enforce_nonnegative, _enforce_odd_positive_integer
+from ctfr_bm.exception import InvalidArgumentError, ArgumentRequiredError
 
 def _sls_i_wrapper(
         X, 

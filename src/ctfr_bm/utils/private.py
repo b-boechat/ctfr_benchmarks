@@ -1,6 +1,6 @@
 import numpy as np
-from ctfr.exception import InvalidCombinationMethodError
-from ctfr.methods_dict import _methods_dict
+from ctfr_bm.exception import InvalidCombinationMethodError
+from ctfr_bm.methods_dict import _methods_dict
 
 def _round_to_power_of_two(number, mode):
     if mode == "ceil":

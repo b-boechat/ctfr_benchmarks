@@ -1,8 +1,8 @@
-from ctfr.exception import (
+from ctfr_bm.exception import (
     InvalidCombinationMethodError,
 )
-from ctfr.utils.private import _get_method_citations, _get_method_parameters
-from ctfr.methods_dict import _methods_dict
+from ctfr_bm.utils.private import _get_method_citations, _get_method_parameters
+from ctfr_bm.methods_dict import _methods_dict
 from warnings import warn
 
 def show_methods():

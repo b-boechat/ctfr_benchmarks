@@ -1,5 +1,5 @@
-from ctfr.exception import CitationNotImplementedError
-from ctfr import __version__
+from ctfr_bm.exception import CitationNotImplementedError
+from ctfr_bm import __version__
 
 def cite():
     """Prints the citation information for the package.

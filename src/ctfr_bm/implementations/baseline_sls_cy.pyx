@@ -2,7 +2,7 @@ import numpy as np
 from scipy.signal import correlate
 cimport cython
 from libc.math cimport exp
-from ctfr.utils.arguments_check import _enforce_nonnegative, _enforce_odd_positive_integer
+from ctfr_bm.utils.arguments_check import _enforce_nonnegative, _enforce_odd_positive_integer
 
 def _baseline_sls_wrapper(X, lek = 11, lsk = 21, lem = 11, lsm = 11, beta = 80):
 

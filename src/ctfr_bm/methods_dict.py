@@ -1,9 +1,9 @@
-from ctfr.implementations.swgm_cy import _swgm_wrapper
-from ctfr.implementations.fls_cy import _fls_wrapper
-from ctfr.implementations.lt_cy import _lt_wrapper
-from ctfr.implementations.sls_h_cy import _sls_h_wrapper
-from ctfr.implementations.sls_i_cy import _sls_i_wrapper
-from ctfr.implementations.binwise_simple import _mean_wrapper, _hmean_wrapper, _gmean_wrapper, _min_wrapper
+from ctfr_bm.implementations.swgm_cy import _swgm_wrapper
+from ctfr_bm.implementations.fls_cy import _fls_wrapper
+from ctfr_bm.implementations.lt_cy import _lt_wrapper
+from ctfr_bm.implementations.sls_h_cy import _sls_h_wrapper
+from ctfr_bm.implementations.sls_i_cy import _sls_i_wrapper
+from ctfr_bm.implementations.binwise_simple import _mean_wrapper, _hmean_wrapper, _gmean_wrapper, _min_wrapper
 
 _methods_dict = {
     "mean": {
@@ -158,10 +158,10 @@ _methods_dict = {
     }
 }
 
-from ctfr.implementations.baseline_swgm_cy import _baseline_swgm_wrapper
-from ctfr.implementations.baseline_lt_cy import _baseline_lt_wrapper
-from ctfr.implementations.baseline_fls_cy import _baseline_fls_wrapper
-from ctfr.implementations.baseline_sls_cy import _baseline_sls_wrapper
+from ctfr_bm.implementations.baseline_swgm_cy import _baseline_swgm_wrapper
+from ctfr_bm.implementations.baseline_lt_cy import _baseline_lt_wrapper
+from ctfr_bm.implementations.baseline_fls_cy import _baseline_fls_wrapper
+from ctfr_bm.implementations.baseline_sls_cy import _baseline_sls_wrapper
 
 _baseline_methods_dict = {
     "baseline_swgm": {

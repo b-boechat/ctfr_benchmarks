@@ -1,5 +1,5 @@
 from warnings import warn
-from ctfr.warning import ArgumentChangeWarning
+from ctfr_bm.warning import ArgumentChangeWarning
 
 def _enforce_nonnegative(value, name, default):
     value = float(value)

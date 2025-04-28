@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.stats import gmean
 from warnings import warn
-from ctfr.warning import ArgumentChangeWarning
+from ctfr_bm.warning import ArgumentChangeWarning
 cimport cython
 from libc.math cimport pow
 

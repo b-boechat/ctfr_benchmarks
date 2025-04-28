@@ -2,7 +2,7 @@ import numpy as np
 from scipy.stats import gmean
 cimport cython
 from libc.math cimport exp
-from ctfr.utils.arguments_check import _enforce_nonnegative, _enforce_greater_or_equal
+from ctfr_bm.utils.arguments_check import _enforce_nonnegative, _enforce_greater_or_equal
 
 def _swgm_wrapper(X, beta = 0.3, max_gamma = 20.0):
 

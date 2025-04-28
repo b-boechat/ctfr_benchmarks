@@ -1,29 +1,29 @@
 import numpy as np
 from scipy.signal import correlate
-from libc.math cimport sqrt
-from ctfr.utils.arguments_check import _enforce_nonnegative, _enforce_odd_positive_integer
+from libc.math cimport exp, sqrt
+from ctfr_bm.utils.arguments_check import _enforce_nonnegative, _enforce_odd_positive_integer
 cimport cython
 
-def _baseline_fls_wrapper(X, lk = 21, lm = 11, gamma = 20.0):
+def _fls_wrapper(X, lk = 21, lm = 11, gamma = 20.0):
 
-    lk = _enforce_odd_positive_integer(lk, 'lk', 21)
-    lm = _enforce_odd_positive_integer(lm, 'lm', 11)
-    gamma = _enforce_nonnegative(gamma, 'gamma', 20.0)
+    lk = _enforce_odd_positive_integer(lk, "lk", 21)
+    lm = _enforce_odd_positive_integer(lm, "lm", 11)
+    gamma = _enforce_nonnegative(gamma, "gamma", 20.0)
 
-    return _baseline_fls_cy(X, lk, lm, gamma)
+    return _fls_cy(X, lk, lm, gamma)
 
 @cython.boundscheck(False)
 @cython.wraparound(False) 
 @cython.nonecheck(False)
 @cython.cdivision(True)
-cdef _baseline_fls_cy(double[:,:,::1] X, Py_ssize_t lk, Py_ssize_t lm, double gamma):
+cdef _fls_cy(double[:,:,::1] X, Py_ssize_t lk, Py_ssize_t lm, double gamma):
 
     cdef:
         Py_ssize_t P = X.shape[0] # Spectrograms axis.
         Py_ssize_t K = X.shape[1] # Frequency axis.
         Py_ssize_t M = X.shape[2] # Time axis.
 
-        double epsilon = 1e-10 # Small value used to avoid 0 in some computations. Bumped to 1e-10 to avoid numerical issues with cross-correlation.
+        double epsilon = 1e-10 # Small value used to avoid 0 in some computations.
         double window_size_sqrt = sqrt(<double> lk * lm)
 
     X_ndarray = np.asarray(X)
@@ -35,14 +35,14 @@ cdef _baseline_fls_cy(double[:,:,::1] X, Py_ssize_t lk, Py_ssize_t lm, double ga
         double[:,:] local_energy_l1_sqrt
 
     # Local suitability container.
-    suitability_ndarray = np.empty((P, K, M), dtype=np.double)
+    suitability_ndarray = np.zeros((P, K, M), dtype=np.double)
     cdef double[:,:,:] suitability = suitability_ndarray
 
-    # Containers related to combination.
-    combination_weight_ndarray = np.empty((P, K, M), dtype=np.double)
+    # Containers related to the combination step.
+    cdef double[:, :, :] log_suitability
+    cdef double[:, :] sum_log_suitability
+    combination_weight_ndarray = np.zeros((P, K, M), dtype=np.double)
     cdef double[:, :, :] combination_weight = combination_weight_ndarray
-
-    cdef double[:, :] suitability_product
 
     # Generate the 2D window for local sparsity calculation.
     hamming_window = np.outer(np.hamming(lk), np.hamming(lm))
@@ -80,14 +80,21 @@ cdef _baseline_fls_cy(double[:,:,::1] X, Py_ssize_t lk, Py_ssize_t lm, double ga
 
     ############ Spectrograms combination {{{
 
-    suitability_product_ndarray = np.prod(suitability_ndarray, axis=0, dtype=np.double)
-    suitability_product = suitability_product_ndarray
+    # Calculate spectrograms logarithm tensor and its sum along first dimension.
+    log_suitability_ndarray = np.log(suitability_ndarray)
+    sum_log_suitability_ndarray = np.sum(log_suitability_ndarray, axis=0)
+
+    log_suitability = log_suitability_ndarray
+    sum_log_suitability = sum_log_suitability_ndarray
+
+    # Calculate combination weights based on local sparsity.
     for p in range(P):
         for k in range(K): 
             for m in range(M):
-                combination_weight[p, k, m] = (suitability[p, k, m] * suitability[p, k, m] / suitability_product[k, m]) ** gamma
+                combination_weight[p, k, m] = exp( (2*log_suitability[p, k, m] - sum_log_suitability[k, m]) * gamma)
+
     
+    ############ Spectrograms combination }}}
+
     # Calculate spectrogram as a binwise weighted arithmetic mean.
     return np.average(X_ndarray, axis=0, weights=combination_weight_ndarray)
-
-    ############ Spectrograms combination }}}

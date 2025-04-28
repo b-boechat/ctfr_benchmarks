@@ -1,5 +1,5 @@
-from ctfr import __version__
-from ctfr.exception import InvalidSampleError
+from ctfr_bm import __version__
+from ctfr_bm.exception import InvalidSampleError
 from requests.exceptions import HTTPError
 import pooch
 

@@ -1,4 +1,4 @@
-import ctfr
+import ctfr_bm as ctfr
 import sys
 import numpy as np
 from scipy.signal import correlate

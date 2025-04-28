@@ -1,12 +1,12 @@
 import numpy as np
 from typing import Any, Iterable
-from ctfr.exception import InvalidSpecError
+from ctfr_bm.exception import InvalidSpecError
 from .core_utils import (
     _normalize_specs_tensor,
     _get_specs_tensor_energy_array,
     _normalize_spec,
 )
-from ctfr.utils.private import _get_method_function
+from ctfr_bm.utils.private import _get_method_function
 
 def ctfr_from_specs(
     specs: Iterable[np.ndarray],

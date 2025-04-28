@@ -57,7 +57,7 @@ html_static_path = ['_static']
 # -- Generate code documentation -----------------------------------------------------
 
 import os
-from ctfr import get_method_name
+from ctfr_bm import get_method_name
 
 IMPLEMENTATIONS_BASE_PATH = "../src/ctfr/implementations"
 CODE_FOLDER = "code"

@@ -66,6 +66,9 @@ def criterium_share(max_local_energy, energy_criterium_db):
 def log_spectral_distortion(cspec, cspec_ref):
     """ Compute the log spectral distortion between two spectrograms. """
     return np.mean(np.abs(ctfr.power_to_db(cspec) - ctfr.power_to_db(cspec_ref)), axis=None)
+    
+def relative_power_error(cspec, cspec_ref):
+    return np.sum(np.abs(cspec - cspec_ref))/np.sum(cspec_ref)
 
 def non_interp_share(specs_shape, interp_steps):
     """ Compute the share of time-frequency bins in which the sparsity computation of SLS-I is not interpolated, for a given specification of the interpolation steps. """
@@ -119,18 +122,18 @@ def time_all_pipeline(num_iter):
     max_local_energy = compute_max_local_energy(specs)
 
     cspec_ctfr, average_time_ctfr = benchmark_method(specs, method='sls_h', num_iter=num_iter, energy_criterium_db=-50)
-    print(f"SLS-H (-50): {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time -- {100*criterium_share(max_local_energy, -50):.2f}% SLS -- {log_spectral_distortion(cspec_ctfr, cspec_base):.2f} LSD")
+    print(f"SLS-H (-50): {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time -- {100*criterium_share(max_local_energy, -50):.2f}% SLS -- {log_spectral_distortion(cspec_ctfr, cspec_base):.2f} LSD -- {relative_power_error(cspec_ctfr, cspec_base):e}")
     cspec_ctfr, average_time_ctfr = benchmark_method(specs, method='sls_h', num_iter=num_iter, energy_criterium_db=-40)
-    print(f"SLS-H (-40): {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time -- {100*criterium_share(max_local_energy, -40):.2f}% SLS -- {log_spectral_distortion(cspec_ctfr, cspec_base):.2f} LSD")
+    print(f"SLS-H (-40): {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time -- {100*criterium_share(max_local_energy, -40):.2f}% SLS -- {log_spectral_distortion(cspec_ctfr, cspec_base):.2f} LSD -- {relative_power_error(cspec_ctfr, cspec_base):e}")
     cspec_ctfr, average_time_ctfr = benchmark_method(specs, method='sls_h', num_iter=num_iter, energy_criterium_db=-20)
-    print(f"SLS-H (-20): {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time -- {100*criterium_share(max_local_energy, -20):.2f}% SLS -- {log_spectral_distortion(cspec_ctfr, cspec_base):.2f} LSD")
+    print(f"SLS-H (-20): {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time -- {100*criterium_share(max_local_energy, -20):.2f}% SLS -- {log_spectral_distortion(cspec_ctfr, cspec_base):.2f} LSD -- {relative_power_error(cspec_ctfr, cspec_base):e}")
 
     interp_steps_default = np.array([[4, 1], [2, 2], [1, 4]])
     interp_steps_double = np.array([[8, 2], [4, 4], [2, 8]])
     cspec_ctfr, average_time_ctfr = benchmark_method(specs, method='sls_i', num_iter=num_iter, interp_steps=interp_steps_default)
-    print(f"SLS-I (default): {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time -- {100*non_interp_share(specs.shape, interp_steps_default):.2f}% SLS -- {log_spectral_distortion(cspec_ctfr, cspec_base):.2f} LSD")
+    print(f"SLS-I (default): {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time -- {100*non_interp_share(specs.shape, interp_steps_default):.2f}% SLS -- {log_spectral_distortion(cspec_ctfr, cspec_base):.2f} LSD -- {relative_power_error(cspec_ctfr, cspec_base):e}")
     cspec_ctfr, average_time_ctfr = benchmark_method(specs, method='sls_i', num_iter=num_iter, interp_steps=interp_steps_double)
-    print(f"SLS-I (doubled): {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time -- {100*non_interp_share(specs.shape, interp_steps_double):.2f}% SLS -- {log_spectral_distortion(cspec_ctfr, cspec_base):.2f} LSD")
+    print(f"SLS-I (doubled): {average_time_ctfr:0.3f} s -- {100*average_time_ctfr/duration:0.2f}% real-time -- {100*non_interp_share(specs.shape, interp_steps_double):.2f}% SLS -- {log_spectral_distortion(cspec_ctfr, cspec_base):.2f} LSD -- {relative_power_error(cspec_ctfr, cspec_base):e}")
 
 
 if __name__ == "__main__":

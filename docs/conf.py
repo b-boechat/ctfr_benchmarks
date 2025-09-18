@@ -59,7 +59,7 @@ html_static_path = ['_static']
 import os
 from ctfr_bm import get_method_name
 
-IMPLEMENTATIONS_BASE_PATH = "../src/ctfr/implementations"
+IMPLEMENTATIONS_BASE_PATH = "../src/ctfr_bm/implementations"
 CODE_FOLDER = "code"
 CODE_TREE_FILE = "code_tree.rst"
 

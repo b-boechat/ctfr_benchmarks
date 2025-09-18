@@ -4,7 +4,7 @@ from glob import glob
 
 from Cython.Build import cythonize
 
-# Define Cython extensions to build. The pyx files are assumed to be in src/ctfr/implementations.
+# Define Cython extensions to build. The pyx files are assumed to be in src/ctfr_bm/implementations.
 IMPLEMENTATIONS_SOURCE_DIR = f"src{sep}ctfr_bm{sep}implementations"
 IMPLEMENTATIONS_MODULE = "ctfr_bm.implementations"
 
